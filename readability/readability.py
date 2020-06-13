@@ -31,7 +31,7 @@ REGEXES = {
         re.I,
     ),
     "negativeRe": re.compile(
-        r"combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget|licenseText",
+        r"combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget|licenseText|bottom",
         re.I,
     ),
     "divToPElementsRe": re.compile(
@@ -77,7 +77,7 @@ def text_length(i):
 def compile_pattern(elements):
     if not elements:
         return None
-    elif isinstance(elements, re._pattern_type):
+    elif isinstance(elements, re.Pattern):
         return elements
     elif isinstance(elements, (str_, bytes_)):
         if isinstance(elements, bytes_):
