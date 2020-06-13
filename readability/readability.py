@@ -27,11 +27,11 @@ REGEXES = {
     ),
     "okMaybeItsACandidateRe": re.compile(r"and|article|body|column|main|shadow", re.I),
     "positiveRe": re.compile(
-        r"article|body|content|entry|hentry|main|page|pagination|post|text|blog|story",
+        r"article|body|content|entry|hentry|main|page|pagination|post|text|blog|story|comic|box",
         re.I,
     ),
     "negativeRe": re.compile(
-        r"combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget",
+        r"combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget|licenseText",
         re.I,
     ),
     "divToPElementsRe": re.compile(
@@ -604,11 +604,11 @@ class Document:
                 elif not content_length:
                     reason = "no content"
                     to_remove = True
-                    #                if el.tag == 'div' and counts['img'] >= 1 and to_remove:
-                    #                    imgs = el.findall('.//img')
-                    #                    valid_img = False
-                    #                    log.debug(tounicode(el))
-                    #                    for img in imgs:
+                if el.tag == 'div' and counts['img'] >= 1 and to_remove:
+                    imgs = el.findall('.//img')
+                    # valid_img = False
+                    log.debug(tounicode(el))
+                    # for img in imgs:
                     #
                     #                        height = img.get('height')
                     #                        text_length = img.get('text_length')
@@ -617,11 +617,11 @@ class Document:
                     #                            valid_img = True
                     #                            log.debug("valid image" + tounicode(img))
                     #                            break
-                    #                    if valid_img:
-                    #                        to_remove = False
-                    #                        log.debug("Allowing %s" %el.text_content())
-                    #                        for desnode in self.tags(el, "table", "ul", "div"):
-                    #                            allowed[desnode] = True
+                    if imgs:
+                        to_remove = False
+                        log.debug("Allowing %s" %el.text_content())
+                        for desnode in self.tags(el, "table", "ul", "div"):
+                            allowed[desnode] = True
 
                     # find x non empty preceding and succeeding siblings
                     i, j = 0, 0
