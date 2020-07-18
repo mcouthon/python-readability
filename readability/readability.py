@@ -605,19 +605,7 @@ class Document:
                     reason = "no content"
                     to_remove = True
                 if el.tag == 'div' and counts['img'] >= 1 and to_remove:
-                    imgs = el.findall('.//img')
-                    # valid_img = False
-                    log.debug(tounicode(el))
-                    # for img in imgs:
-                    #
-                    #                        height = img.get('height')
-                    #                        text_length = img.get('text_length')
-                    #                        log.debug ("height %s text_length %s" %(repr(height), repr(text_length)))
-                    #                        if to_int(height) >= 100 or to_int(text_length) >= 100:
-                    #                            valid_img = True
-                    #                            log.debug("valid image" + tounicode(img))
-                    #                            break
-                    if imgs:
+                    if el.findall('.//img'):
                         to_remove = False
                         log.debug("Allowing %s" %el.text_content())
                         for desnode in self.tags(el, "table", "ul", "div"):
