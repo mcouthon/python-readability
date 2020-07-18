@@ -42,6 +42,7 @@ Usage
 Change Log
 ----------
 
+-  0.8.2 Changes to the processing of articles that contain only/mostly pictures (e.g. XKCD.com)
 -  0.8.1 Fixed processing of non-ascii HTMLs via regexps.
 -  0.8 Replaced XHTML output with HTML5 output in summary() call.
 -  0.7.1 Support for Python 3.7 . Fixed a slowdown when processing documents with lots of spaces.
