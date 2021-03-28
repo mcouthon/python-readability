@@ -34,9 +34,7 @@ def find_version(*file_paths):
     #   https://github.com/pypa/virtualenv/issues/201#issuecomment-3145690
     with codecs.open(os.path.join(here, *file_paths), "r") as fp:
         version_file = fp.read()
-        version_match = re.search(
-            r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M,
-        )
+        version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]", version_file, re.M,)
         if version_match:
             return version_match.group(1)
 

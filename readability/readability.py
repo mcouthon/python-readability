@@ -27,16 +27,13 @@ REGEXES = {
     ),
     "okMaybeItsACandidateRe": re.compile(r"and|article|body|column|main|shadow", re.I),
     "positiveRe": re.compile(
-        r"article|body|content|entry|hentry|main|page|pagination|post|text|blog|story|comic|box",
-        re.I,
+        r"article|body|content|entry|hentry|main|page|pagination|post|text|blog|story|comic|box", re.I,
     ),
     "negativeRe": re.compile(
         r"combx|comment|com-|contact|foot|footer|footnote|masthead|media|meta|outbrain|promo|related|scroll|shoutbox|sidebar|sponsor|shopping|tags|tool|widget|licenseText|bottom",
         re.I,
     ),
-    "divToPElementsRe": re.compile(
-        r"<(a|blockquote|dl|div|img|ol|p|pre|table|ul)", re.I
-    ),
+    "divToPElementsRe": re.compile(r"<(a|blockquote|dl|div|img|ol|p|pre|table|ul)", re.I),
     #'replaceBrsRe': re.compile(r'(<br[^>]*>[ \n\r\t]*){2,}',re.I),
     #'replaceFontsRe': re.compile(r'<(\/?)font[^>]*>',re.I),
     #'trimRe': re.compile(r'^\s+|\s+$/'),
@@ -162,17 +159,13 @@ class Document:
             try:
                 # such support is added in lxml 3.3.0
                 doc.make_links_absolute(
-                    base_href,
-                    resolve_base_href=True,
-                    handle_failures=self.handle_failures,
+                    base_href, resolve_base_href=True, handle_failures=self.handle_failures,
                 )
             except TypeError:  # make_links_absolute() got an unexpected keyword argument 'handle_failures'
                 # then we have lxml < 3.3.0
                 # please upgrade to lxml >= 3.3.0 if you're failing here!
                 doc.make_links_absolute(
-                    base_href,
-                    resolve_base_href=True,
-                    handle_failures=self.handle_failures,
+                    base_href, resolve_base_href=True, handle_failures=self.handle_failures,
                 )
         else:
             doc.resolve_base_href(handle_failures=self.handle_failures)
@@ -223,28 +216,16 @@ class Document:
                 best_candidate = self.select_best_candidate(candidates)
 
                 if best_candidate:
-                    article = self.get_article(
-                        candidates, best_candidate, html_partial=html_partial
-                    )
+                    article = self.get_article(candidates, best_candidate, html_partial=html_partial)
                 else:
                     if ruthless:
                         log.info("ruthless removal did not work. ")
                         ruthless = False
-                        log.debug(
-                            (
-                                "ended up stripping too much - "
-                                "going for a safer _parse"
-                            )
-                        )
+                        log.debug(("ended up stripping too much - " "going for a safer _parse"))
                         # try again
                         continue
                     else:
-                        log.debug(
-                            (
-                                "Ruthless and lenient parsing did not work. "
-                                "Returning raw html"
-                            )
-                        )
+                        log.debug(("Ruthless and lenient parsing did not work. " "Returning raw html"))
                         article = self.html.find("body")
                         if article is None:
                             article = self.html
@@ -287,10 +268,7 @@ class Document:
             if sibling is best_elem:
                 append = True
             sibling_key = sibling  # HashableElement(sibling)
-            if (
-                sibling_key in candidates
-                and candidates[sibling_key]["content_score"] >= sibling_score_threshold
-            ):
+            if sibling_key in candidates and candidates[sibling_key]["content_score"] >= sibling_score_threshold:
                 append = True
 
             if sibling.tag == "p":
@@ -300,11 +278,7 @@ class Document:
 
                 if node_length > 80 and link_density < 0.25:
                     append = True
-                elif (
-                    node_length <= 80
-                    and link_density == 0
-                    and re.search(r"\.( |$)", node_content)
-                ):
+                elif node_length <= 80 and link_density == 0 and re.search(r"\.( |$)", node_content):
                     append = True
 
             if append:
@@ -322,9 +296,7 @@ class Document:
         if not candidates:
             return None
 
-        sorted_candidates = sorted(
-            candidates.values(), key=lambda x: x["content_score"], reverse=True
-        )
+        sorted_candidates = sorted(candidates.values(), key=lambda x: x["content_score"], reverse=True)
         for candidate in sorted_candidates[:5]:
             elem = candidate["elem"]
             log.debug("Top 5 : %6.3f %s" % (candidate["content_score"], describe(elem)))
@@ -385,10 +357,7 @@ class Document:
             candidate = candidates[elem]
             ld = self.get_link_density(elem)
             score = candidate["content_score"]
-            log.debug(
-                "Branch %6.3f %s link density %.3f -> %6.3f"
-                % (score, describe(elem), ld, score * (1 - ld))
-            )
+            log.debug("Branch %6.3f %s link density %.3f -> %6.3f" % (score, describe(elem), ld, score * (1 - ld)))
             candidate["content_score"] *= 1 - ld
 
         return candidates
@@ -462,9 +431,7 @@ class Document:
             # are not direct children of elem
             # This results in incorrect results in case there is an <img>
             # buried within an <a> for example
-            if not REGEXES["divToPElementsRe"].search(
-                str_(b"".join(map(tostring_, list(elem))))
-            ):
+            if not REGEXES["divToPElementsRe"].search(str_(b"".join(map(tostring_, list(elem))))):
                 # log.debug("Altering %s to p" % (describe(elem)))
                 elem.tag = "p"
                 # print "Fixed element "+describe(elem)
@@ -515,9 +482,7 @@ class Document:
 
         allowed = {}
         # Conditionally clean <table>s, <ul>s, and <div>s
-        for el in self.reverse_tags(
-            node, "table", "ul", "div", "aside", "header", "footer", "section"
-        ):
+        for el in self.reverse_tags(node, "table", "ul", "div", "aside", "header", "footer", "section"):
             if el in allowed:
                 continue
             weight = self.class_weight(el)
@@ -529,10 +494,7 @@ class Document:
             tag = el.tag
 
             if weight + content_score < 0:
-                log.debug(
-                    "Removed %s with score %6.3f and weight %-3s"
-                    % (describe(el), content_score, weight,)
-                )
+                log.debug("Removed %s with score %6.3f and weight %-3s" % (describe(el), content_score, weight,))
                 el.drop_tree()
             elif el.text_content().count(",") < 10:
                 counts = {}
@@ -571,43 +533,27 @@ class Document:
                     reason = "less than 3x <p>s than <input>s"
                     to_remove = True
                 elif content_length < MIN_LEN and counts["img"] == 0:
-                    reason = (
-                        "too short content length %s without a single image"
-                        % content_length
-                    )
+                    reason = "too short content length %s without a single image" % content_length
                     to_remove = True
                 elif content_length < MIN_LEN and counts["img"] > 2:
-                    reason = (
-                        "too short content length %s and too many images"
-                        % content_length
-                    )
+                    reason = "too short content length %s and too many images" % content_length
                     to_remove = True
                 elif weight < 25 and link_density > 0.2:
-                    reason = "too many links %.3f for its weight %s" % (
-                        link_density,
-                        weight,
-                    )
+                    reason = "too many links %.3f for its weight %s" % (link_density, weight,)
                     to_remove = True
                 elif weight >= 25 and link_density > 0.5:
-                    reason = "too many links %.3f for its weight %s" % (
-                        link_density,
-                        weight,
-                    )
+                    reason = "too many links %.3f for its weight %s" % (link_density, weight,)
                     to_remove = True
-                elif (counts["embed"] == 1 and content_length < 75) or counts[
-                    "embed"
-                ] > 1:
-                    reason = (
-                        "<embed>s with too short content length, or too many <embed>s"
-                    )
+                elif (counts["embed"] == 1 and content_length < 75) or counts["embed"] > 1:
+                    reason = "<embed>s with too short content length, or too many <embed>s"
                     to_remove = True
                 elif not content_length:
                     reason = "no content"
                     to_remove = True
-                if el.tag == 'div' and counts['img'] >= 1 and to_remove:
-                    if el.findall('.//img'):
+                if el.tag == "div" and counts["img"] >= 1 and to_remove:
+                    if el.findall(".//img"):
                         to_remove = False
-                        log.debug("Allowing %s" %el.text_content())
+                        log.debug("Allowing %s" % el.text_content())
                         for desnode in self.tags(el, "table", "ul", "div"):
                             allowed[desnode] = True
 
@@ -647,10 +593,7 @@ class Document:
                     # log.debug("pname %s pweight %.3f" %(pname, pweight))
                     el.drop_tree()
                 else:
-                    log.debug(
-                        "Not removing %s of length %s: %s"
-                        % (describe(el), content_length, text_content(el))
-                    )
+                    log.debug("Not removing %s of length %s: %s" % (describe(el), content_length, text_content(el)))
 
         self.html = node
         return self.get_clean_html()
@@ -663,29 +606,15 @@ def main():
 
     parser = OptionParser(usage="%prog: [options] [file]")
     parser.add_option("-v", "--verbose", action="count", default=0)
-    parser.add_option(
-        "-b", "--browser", default=None, action="store_true", help="open in browser"
-    )
-    parser.add_option(
-        "-l", "--log", default=None, help="save logs into file (appended)"
-    )
-    parser.add_option(
-        "-u", "--url", default=None, help="use URL instead of a local file"
-    )
+    parser.add_option("-b", "--browser", default=None, action="store_true", help="open in browser")
+    parser.add_option("-l", "--log", default=None, help="save logs into file (appended)")
+    parser.add_option("-u", "--url", default=None, help="use URL instead of a local file")
     parser.add_option("-x", "--xpath", default=None, help="add original xpath")
     parser.add_option(
-        "-p",
-        "--positive-keywords",
-        default=None,
-        help="positive keywords (comma-separated)",
-        action="store",
+        "-p", "--positive-keywords", default=None, help="positive keywords (comma-separated)", action="store",
     )
     parser.add_option(
-        "-n",
-        "--negative-keywords",
-        default=None,
-        help="negative keywords (comma-separated)",
-        action="store",
+        "-n", "--negative-keywords", default=None, help="negative keywords (comma-separated)", action="store",
     )
     (options, args) = parser.parse_args()
 

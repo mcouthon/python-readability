@@ -20,17 +20,15 @@ CHARSETS = {
 
 def fix_charset(encoding):
     """Overrides encoding when charset declaration
-       or charset determination is a subset of a larger
-       charset.  Created because of issues with Chinese websites"""
+    or charset determination is a subset of a larger
+    charset.  Created because of issues with Chinese websites"""
     encoding = encoding.lower()
     return CHARSETS.get(encoding, encoding)
 
 
 def get_encoding(page):
     # Regex for XML and HTML Meta charset declaration
-    declared_encodings = (
-        RE_CHARSET.findall(page) + RE_PRAGMA.findall(page) + RE_XML.findall(page)
-    )
+    declared_encodings = RE_CHARSET.findall(page) + RE_PRAGMA.findall(page) + RE_XML.findall(page)
 
     # Try any declared encodings
     for declared_encoding in declared_encodings:

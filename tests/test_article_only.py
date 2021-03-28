@@ -28,8 +28,7 @@ class TestArticleOnly(unittest.TestCase):
         """Using the si sample, load article with only opening body element"""
         sample = load_sample("si-game.sample.html")
         doc = Document(
-            sample,
-            url="http://sportsillustrated.cnn.com/baseball/mlb/gameflash/2012/04/16/40630_preview.html",
+            sample, url="http://sportsillustrated.cnn.com/baseball/mlb/gameflash/2012/04/16/40630_preview.html",
         )
         res = doc.summary()
         self.assertEqual("<html><body><div><div class", res[0:27])
@@ -38,8 +37,7 @@ class TestArticleOnly(unittest.TestCase):
         """Using the si sample, make sure we can get the article alone."""
         sample = load_sample("si-game.sample.html")
         doc = Document(
-            sample,
-            url="http://sportsillustrated.cnn.com/baseball/mlb/gameflash/2012/04/16/40630_preview.html",
+            sample, url="http://sportsillustrated.cnn.com/baseball/mlb/gameflash/2012/04/16/40630_preview.html",
         )
         res = doc.summary(html_partial=True)
         self.assertEqual('<div><div class="', res[0:17])
@@ -114,10 +112,7 @@ class TestArticleOnly(unittest.TestCase):
     def test_not_self_closing(self):
         sample = '<h2><a href="#"></a>foobar</h2>'
         doc = Document(sample)
-        assert (
-            '<body id="readabilityBody"><h2><a href="#"></a>foobar</h2></body>'
-            == doc.summary()
-        )
+        assert '<body id="readabilityBody"><h2><a href="#"></a>foobar</h2></body>' == doc.summary()
 
     def test_utf8_kanji(self):
         """Using the UTF-8 kanji sample, load article which is written in kanji"""
